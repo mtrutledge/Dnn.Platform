@@ -35,7 +35,6 @@ namespace DotNetNuke.Web.Mvc
 
         public void Init(HttpApplication context)
         {
-            SuppressXFrameOptionsHeaderIfPresentInConfig();
             ComponentFactory.RegisterComponentInstance<IModuleExecutionEngine>(new ModuleExecutionEngine());
             context.BeginRequest += InitDnn;
         }
@@ -51,29 +50,6 @@ namespace DotNetNuke.Web.Mvc
 
         public void Dispose()
         {
-        }
-
-        /// <summary>
-        /// Suppress X-Frame-Options Header if there is configuration specified in web.config for it.
-        /// </summary>
-        private static void SuppressXFrameOptionsHeaderIfPresentInConfig()
-        {
-            var xmlConfig = Config.Load();
-            var xmlCustomHeaders =
-                xmlConfig.SelectSingleNode("configuration/system.webServer/httpProtocol/customHeaders") ??
-                xmlConfig.SelectSingleNode("configuration/location/system.webServer/httpProtocol/customHeaders");
-
-            if (xmlCustomHeaders?.ChildNodes != null)
-            {
-                foreach (XmlNode header in xmlCustomHeaders.ChildNodes)
-                {
-                    if (header.Attributes != null && header.Attributes["name"].Value == "X-Frame-Options")
-                    {
-                        AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
-                        break;
-                    }
-                }
-            }
         }
     }
 }

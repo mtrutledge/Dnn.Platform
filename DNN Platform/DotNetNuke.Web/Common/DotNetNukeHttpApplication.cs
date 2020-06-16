@@ -7,8 +7,9 @@ namespace DotNetNuke.Web.Common.Internal
     using System.Linq;
     using System.Net;
     using System.Web;
+    using System.Web.Helpers;
     using System.Web.Security;
-
+    using System.Xml;
     using DotNetNuke.Common;
     using DotNetNuke.Common.Utilities;
     using DotNetNuke.ComponentModel;
@@ -102,6 +103,8 @@ namespace DotNetNuke.Web.Common.Internal
             ComponentFactory.InstallComponents(new ProviderInstaller("clientcapability", typeof(ClientCapabilityProvider)));
             ComponentFactory.InstallComponents(new ProviderInstaller("cryptography", typeof(CryptographyProvider), typeof(FipsCompilanceCryptographyProvider)));
 
+            SuppressXFrameOptionsHeaderIfPresentInConfig();
+            
             Logger.InfoFormat("Application Started ({0})", Globals.ElapsedSinceAppStart); // just to start the timer
             DotNetNukeShutdownOverload.InitializeFcnSettings();
 
@@ -109,6 +112,29 @@ namespace DotNetNuke.Web.Common.Internal
             DotNetNuke.Services.Zip.SharpZipLibRedirect.RegisterSharpZipLibRedirect();
 
             // DotNetNukeSecurity.Initialize();
+        }
+
+        /// <summary>
+        /// Suppress X-Frame-Options Header if there is configuration specified in web.config for it.
+        /// </summary>
+        private static void SuppressXFrameOptionsHeaderIfPresentInConfig()
+        {
+            var xmlConfig = Config.Load();
+            var xmlCustomHeaders =
+                xmlConfig.SelectSingleNode("configuration/system.webServer/httpProtocol/customHeaders") ??
+                xmlConfig.SelectSingleNode("configuration/location/system.webServer/httpProtocol/customHeaders");
+
+            if (xmlCustomHeaders?.ChildNodes != null)
+            {
+                foreach (XmlNode header in xmlCustomHeaders.ChildNodes)
+                {
+                    if (header.Attributes != null && header.Attributes["name"].Value == "X-Frame-Options")
+                    {
+                        AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
+                        break;
+                    }
+                }
+            }
         }
 
         private static void RegisterIfNotAlreadyRegistered<TConcrete>()
