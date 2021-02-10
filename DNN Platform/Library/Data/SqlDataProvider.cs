@@ -71,13 +71,13 @@ namespace DotNetNuke.Data
         /// <inheritdoc/>
         public override IDataReader ExecuteReader(string procedureName, params object[] commandParameters)
         {
-            return _dbConnectionProvider.ExecuteReader(this.ConnectionString, CommandType.StoredProcedure, 0, this.DatabaseOwner + this.ObjectQualifier + procedureName, commandParameters);
+            return _dbConnectionProvider.ExecuteReader(this.ReadOnlyConnectionString, CommandType.StoredProcedure, 0, this.DatabaseOwner + this.ObjectQualifier + procedureName, commandParameters);
         }
 
         /// <inheritdoc/>
         public override IDataReader ExecuteReader(int timeoutSec, string procedureName, params object[] commandParameters)
         {
-            return _dbConnectionProvider.ExecuteReader(this.ConnectionString, CommandType.StoredProcedure, timeoutSec, this.DatabaseOwner + this.ObjectQualifier + procedureName, commandParameters);
+            return _dbConnectionProvider.ExecuteReader(this.ReadOnlyConnectionString, CommandType.StoredProcedure, timeoutSec, this.DatabaseOwner + this.ObjectQualifier + procedureName, commandParameters);
         }
 
         /// <inheritdoc/>
@@ -156,13 +156,13 @@ namespace DotNetNuke.Data
         /// <inheritdoc/>
         public override IDataReader ExecuteSQL(string sql)
         {
-            return this.ExecuteSQLInternal(this.ConnectionString, sql);
+            return this.ExecuteSQLInternal(this.ReadOnlyConnectionString, sql);
         }
 
         /// <inheritdoc/>
         public override IDataReader ExecuteSQL(string sql, int timeoutSec)
         {
-            return this.ExecuteSQLInternal(this.ConnectionString, sql, timeoutSec);
+            return this.ExecuteSQLInternal(this.ReadOnlyConnectionString, sql, timeoutSec);
         }
 
         /// <inheritdoc/>

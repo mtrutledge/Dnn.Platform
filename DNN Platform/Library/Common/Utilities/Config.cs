@@ -215,6 +215,22 @@ namespace DotNetNuke.Common.Utilities
         }
 
         /// <summary>
+        /// Gets the read only connection String as specified in the provider.
+        /// </summary>
+        /// <returns>The connection String.</returns>
+        public static string GetReadOnlyConnectionString()
+        {
+            string cs = GetConnectionString(GetDefaultProvider("data").Attributes["readOnlyConnectionStringName"]);
+
+            if (string.IsNullOrEmpty(cs))
+            {
+                return GetConnectionString();
+            }
+
+            return cs;
+        }
+
+        /// <summary>
         /// Gets the specified connection String.
         /// </summary>
         /// <param name="name">Name of Connection String to return.</param>

@@ -50,6 +50,22 @@ namespace DotNetNuke.Data
             }
         }
 
+        public virtual string ReadOnlyConnectionString
+        {
+            get
+            {
+                // Get Connection string from web.config
+                string connectionString = Config.GetReadOnlyConnectionString();
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    // Use connection string specified in provider
+                    connectionString = this.Settings["readOnlyonnectionString"];
+                }
+
+                return connectionString;
+            }
+        }
+
         public virtual string DatabaseOwner
         {
             get
@@ -4149,7 +4165,7 @@ namespace DotNetNuke.Data
             sql = DataUtil.ReplaceTokens(sql);
             try
             {
-                return SqlHelper.ExecuteReader(this.ConnectionString, CommandType.Text, sql, sqlCommandParameters);
+                return SqlHelper.ExecuteReader(this.ReadOnlyConnectionString, CommandType.Text, sql, sqlCommandParameters);
             }
             catch
             {
