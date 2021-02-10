@@ -34,6 +34,8 @@ namespace DotNetNuke.Data
 
         private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(DataProvider));
 
+        private static string m_ReadOnlyConnectionStringCache = string.Empty;
+
         public virtual string ConnectionString
         {
             get
@@ -54,15 +56,18 @@ namespace DotNetNuke.Data
         {
             get
             {
-                // Get Connection string from web.config
-                string connectionString = Config.GetReadOnlyConnectionString();
-                if (string.IsNullOrEmpty(connectionString))
+                if (string.IsNullOrEmpty(m_ReadOnlyConnectionStringCache))
                 {
-                    // Use connection string specified in provider
-                    connectionString = this.Settings["readOnlyonnectionString"];
+                    // Get Connection string from web.config
+                    m_ReadOnlyConnectionStringCache = Config.GetReadOnlyConnectionString();
+                    if (string.IsNullOrEmpty(m_ReadOnlyConnectionStringCache))
+                    {
+                        // Use connection string specified in provider
+                        m_ReadOnlyConnectionStringCache = this.Settings["readOnlyConnectionString"];
+                    }
                 }
 
-                return connectionString;
+                return m_ReadOnlyConnectionStringCache;
             }
         }
 

@@ -48,6 +48,7 @@ public sealed class CopyWebConfigToDevSite : FrostingTask<Context>
         var trans = Utilities.ReadFile(transFile);
         trans = trans
             .Replace("{ConnectionString}", context.Settings.DnnConnectionString)
+            .Replace("{ConnectionStringReadOnly}", "ApplicationIntent=ReadOnly;" + context.Settings.DnnConnectionString)
             .Replace("{DbOwner}", context.Settings.DbOwner)
             .Replace("{ObjectQualifier}", context.Settings.ObjectQualifier);
         var res = context.XmlTransform(trans, conf);

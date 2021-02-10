@@ -9,9 +9,10 @@
     <xsl:template match="connectionStrings">
         <connectionStrings>
             <add name="SiteSqlServer" connectionString="{ConnectionString}" providerName="System.Data.SqlClient" />
+            <add name="SiteSqlServerReadOnly" connectionString="{ConnectionStringReadOnly}" providerName="System.Data.SqlClient" />
         </connectionStrings>
     </xsl:template>
     <xsl:template match="add[@name='SqlDataProvider']">
-        <add name="SqlDataProvider" type="DotNetNuke.Data.SqlDataProvider, DotNetNuke" connectionStringName="SiteSqlServer" upgradeConnectionString="" providerPath="~\Providers\DataProviders\SqlDataProvider\" objectQualifier="{ObjectQualifier}" databaseOwner="{DbOwner}" />
+        <add name="SqlDataProvider" type="DotNetNuke.Data.SqlDataProvider, DotNetNuke" connectionStringName="SiteSqlServer" readOnlyConnectionStringName="SiteSqlServerReadOnly" upgradeConnectionString="" providerPath="~\Providers\DataProviders\SqlDataProvider\" objectQualifier="{ObjectQualifier}" databaseOwner="{DbOwner}" />
     </xsl:template>
 </xsl:stylesheet>
